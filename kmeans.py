@@ -2,28 +2,29 @@ from __future__ import annotations
 
 import numpy as np
 
-from image_io import load_pixels  # for testing
+from image_io import image_load  # for testing
 
 
-def initialize_centroids(X: np.ndarray, k: int, seed: int | None) -> np.ndarray:
+def _initialize_centroids(X: np.ndarray, k: int, seed: int | None = None) -> np.ndarray:
     """Initialize an array with k-random starting centroids"""
     rng = np.random.default_rng(seed)
     centroids = rng.choice(X, k, replace=False)
     return centroids
 
 
-def assign_clusters(X: np.ndarray, centroids: np.ndarray):
+def _assign_clusters(X: np.ndarray, centroids: np.ndarray):
     """Assign labels to the nearest centroids creating clusters, returns (squared distance, id of nearest centroid)"""
 
-    n = len(X)
-    distances = np.full(n, np.inf)
-    labels = np.zeros(n, dtype=int)
-    for id_pixel, pixel in enumerate(X):
-        for id_c, c in enumerate(centroids):
-            val = _squared_distance(c, pixel)
-            if val < distances[id_pixel]:
-                distances[id_pixel] = val
-                labels[id_pixel] = id_c
+    distances = (
+        (X**2).sum(axis=1).reshape(-1, 1)
+        + (centroids**2).sum(axis=1).reshape(1, -1)
+        - 2 * np.dot(X, centroids.T)
+    )  # sum each row together (a-b)^2 = ||a||^2 + ||b||^2 - 2|a||b|, returns for each pixel k distances to centroids
+
+    labels = np.argmin(
+        distances,
+        axis=1,
+    )
     return distances, labels
 
 
@@ -43,27 +44,15 @@ def update_centroids(
     return new_centroids
 
 
-def _squared_distance(
-    centroid: tuple[int, int, int], pixel: tuple[int, int, int]
-) -> float:
-    x_c, y_c, z_c = centroid
-    x_p, y_p, z_p = pixel
-
-    def _distance(a: int, b: int):
-        return (a - b) ** 2
-
-    return _distance(x_c, x_p) + _distance(y_c, y_p) + _distance(z_c, z_p)
-
-
 def fit(
     X: np.array, k: int, seed: int | None = None, max_iter: int = 100, eps: float = 1e-4
 ):
     """Run k-means clustering algorithm. Returns (centroids, labels, n_iter)"""
     X = X.astype(np.float64)
-    centroids = initialize_centroids(X, k, seed)
+    centroids = _initialize_centroids(X, k, seed)
 
     for i in range(max_iter):
-        _, labels = assign_clusters(X, centroids)
+        _, labels = _assign_clusters(X, centroids)
         new_centroids = update_centroids(X, labels, centroids)
 
         shift = np.linalg.norm(new_centroids - centroids)
@@ -72,15 +61,17 @@ def fit(
         if shift < eps:  # if shift is small enough
             break
 
-    _, labels = assign_clusters(X, centroids)
+    _, labels = _assign_clusters(X, centroids)
     return (centroids, labels, i + 1)
 
 
 if __name__ == "__main__":
-    pixels, (height, width) = load_pixels("data/results/test-small.npz")
+    # pixels, (height, width) = load_pixels("data/results/test-small.npz")
+    pixels, (height, width) = image_load("data/test-small.png")
+    pixels = pixels.reshape(-1, 3)
     print(f"loaded {len(pixels):,} pixels ({height}x{width})")
 
-    k = 8
+    k = 4
     centroids, labels, n_iter = fit(pixels, k=k, seed=0)
 
     print(f"converged in {n_iter} iterations")
