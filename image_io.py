@@ -22,13 +22,13 @@ def save_pixels(pixels: np.ndarray, size: tuple[int, int], path: Path) -> None:
 
 
 def load_pixels(path: Path) -> tuple[np.ndarray, tuple[int, int]]:
-    """Load pixels + original (height, width) saved by save_pixels."""
+    """Load pixels + original (height, width) saved by save_pixels. Returns (pixels, (height, width))"""
     data = np.load(path)
     return data["pixels"], tuple(data["size"])
 
 
 if __name__ == "__main__":
-    pixels, size = image_load("data/cat.JPG")
-    save_pixels(pixels, size, "data/results/cat")
+    pixels, size = image_load("data/test-small.png")
+    save_pixels(pixels, size, "data/results/test-small")
 
     print(pixels)
