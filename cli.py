@@ -35,6 +35,12 @@ def main():
         help="batch size for k-means clustering algorithm",
         default=100_000,
     )
+    parser.add_argument(
+        "--backend",
+        choices=["scratch", "sklearn"],
+        default="scratch",
+        help="which k-means implementation to use (default: scratch)",
+    )
 
     args = parser.parse_args()
 
@@ -46,6 +52,7 @@ def main():
         max_iter=args.max_iter,
         eps=args.eps,
         batch_size=args.b,
+        backend=args.backend,
     )
     print(f"Saved the compressed image to: {args.save}")
     print(

@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 
 import kmeans
+import kmeans_sklearn
 from image_io import image_load
 from stats import compression_report
 
@@ -27,7 +28,8 @@ def pipeline(
     load_path: Path,
     save_path: Path,
     k: int,
-    seed: int | None,
+    backend: str = "scratch",
+    seed: int | None = None,
     max_iter: int = 100,
     eps: float = 1e-4,
     batch_size: int = 100_000,
@@ -35,7 +37,12 @@ def pipeline(
     image, (height, width) = image_load(load_path)
     X = image.reshape(-1, 3)
 
-    centroids, labels, _ = kmeans.fit(X, k, seed, max_iter, eps, batch_size)
+    if backend == "scratch":
+        centroids, labels, n_iter = kmeans.fit(X, k, seed, max_iter, eps)
+    elif backend == "sklearn":
+        centroids, labels, n_iter = kmeans_sklearn.fit(X, k, seed, max_iter, eps)  # noqa: RUF059
+    else:
+        raise ValueError(f"unknown backend: {backend!r}")
 
     save_path = Path(save_path)
     save_path.parent.mkdir(parents=True, exist_ok=True)
