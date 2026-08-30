@@ -14,21 +14,31 @@ def _initialize_centroids(X: np.ndarray, k: int, seed: int | None = None) -> np.
 
 def _assign_clusters(X: np.ndarray, centroids: np.ndarray):
     """Assign labels to the nearest centroids creating clusters, returns (squared distance, id of nearest centroid)"""
+    n = len(X)
+    distances = np.empty(n)
+    labels = np.empty(n, dtype=int)
+    batch_size = 50000
 
-    distances = (
-        (X**2).sum(axis=1).reshape(-1, 1)
-        + (centroids**2).sum(axis=1).reshape(1, -1)
-        - 2 * np.dot(X, centroids.T)
-    )  # sum each row together (a-b)^2 = ||a||^2 + ||b||^2 - 2|a||b|, returns for each pixel k distances to centroids
+    for i in range(
+        0, n, batch_size
+    ):  # introduce batching to solve the ArrayMemoryError
+        end = min(i + batch_size, n)
+        batch = X[i:end]
 
-    labels = np.argmin(
-        distances,
-        axis=1,
-    )
+        batch_dist = (
+            (batch**2).sum(axis=1).reshape(-1, 1)
+            + (centroids**2).sum(axis=1).reshape(1, -1)
+            - 2 * np.dot(batch, centroids.T)
+        )
+
+        batch_labels = np.argmin(batch_dist, axis=1)
+
+        distances[i:end] = np.min(batch_dist, axis=1)
+        labels[i:end] = batch_labels
     return distances, labels
 
 
-def update_centroids(
+def _update_centroids(
     X: np.ndarray, labels: np.ndarray, centroids: np.ndarray
 ) -> np.ndarray:
     """Update centroids by finding their means in (r,g,b) space. Returns np.ndarray with new positions of centroids"""
@@ -53,7 +63,7 @@ def fit(
 
     for i in range(max_iter):
         _, labels = _assign_clusters(X, centroids)
-        new_centroids = update_centroids(X, labels, centroids)
+        new_centroids = _update_centroids(X, labels, centroids)
 
         shift = np.linalg.norm(new_centroids - centroids)
         centroids = new_centroids
