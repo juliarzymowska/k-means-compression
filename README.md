@@ -69,7 +69,6 @@ python3 cli.py -k 16 --load photo.jpg --save compressed.png
 | `--eps` | Convergence tolerance | 1e-4 |
 | `--backend` | `scratch` (from-scratch, this project's implementation) or `sklearn` (fast path for large images / high K) | `scratch` |
  
-> [!tip] Important! 
 > The `scratch` backend is the point of this project, but it's a pure Python/numpy implementation and can take a while on large images at high K! 
  
 ## Architecture
