@@ -30,6 +30,11 @@ def main():
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--max_iter", type=int, default=100)
     parser.add_argument("--eps", type=float, default=1e-4)
+    parser.add_argument(
+        "-b",
+        help="batch size for k-means clustering algorithm",
+        default=100_000,
+    )
 
     args = parser.parse_args()
 
@@ -40,6 +45,7 @@ def main():
         seed=args.seed,
         max_iter=args.max_iter,
         eps=args.eps,
+        batch_size=args.b,
     )
     print(f"Saved the compressed image to: {args.save}")
 

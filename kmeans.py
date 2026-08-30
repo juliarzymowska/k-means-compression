@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
+from tqdm import tqdm
 
 from image_io import image_load  # for testing
 
@@ -12,12 +13,11 @@ def _initialize_centroids(X: np.ndarray, k: int, seed: int | None = None) -> np.
     return centroids
 
 
-def _assign_clusters(X: np.ndarray, centroids: np.ndarray):
+def _assign_clusters(X: np.ndarray, centroids: np.ndarray, batch_size: int = 100_000):
     """Assign labels to the nearest centroids creating clusters, returns (squared distance, id of nearest centroid)"""
     n = len(X)
     distances = np.empty(n)
     labels = np.empty(n, dtype=int)
-    batch_size = 50000
 
     for i in range(
         0, n, batch_size
@@ -55,14 +55,19 @@ def _update_centroids(
 
 
 def fit(
-    X: np.array, k: int, seed: int | None = None, max_iter: int = 100, eps: float = 1e-4
+    X: np.array,
+    k: int,
+    seed: int | None = None,
+    max_iter: int = 100,
+    eps: float = 1e-4,
+    batch_size: int = 100_000,
 ):
     """Run k-means clustering algorithm. Returns (centroids, labels, n_iter)"""
     X = X.astype(np.float64)
     centroids = _initialize_centroids(X, k, seed)
 
-    for i in range(max_iter):
-        _, labels = _assign_clusters(X, centroids)
+    for i in tqdm(range(max_iter)):
+        _, labels = _assign_clusters(X, centroids, batch_size)
         new_centroids = _update_centroids(X, labels, centroids)
 
         shift = np.linalg.norm(new_centroids - centroids)
@@ -77,7 +82,7 @@ def fit(
 
 if __name__ == "__main__":
     # pixels, (height, width) = load_pixels("data/results/test-small.npz")
-    pixels, (height, width) = image_load("data/test-small.png")
+    pixels, (height, width) = image_load("data/cat.JPG")
     pixels = pixels.reshape(-1, 3)
     print(f"loaded {len(pixels):,} pixels ({height}x{width})")
 
