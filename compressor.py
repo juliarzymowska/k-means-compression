@@ -7,6 +7,7 @@ from PIL import Image
 
 import kmeans
 from image_io import image_load
+from stats import compression_report
 
 
 def image_reconstruction(
@@ -30,7 +31,7 @@ def pipeline(
     max_iter: int = 100,
     eps: float = 1e-4,
     batch_size: int = 100_000,
-):
+) -> dict:
     image, (height, width) = image_load(load_path)
     X = image.reshape(-1, 3)
 
@@ -42,6 +43,7 @@ def pipeline(
     compressed_image = image_reconstruction(centroids, labels, height, width)
     im = Image.fromarray(compressed_image)
     im.save(save_path)
+    return compression_report(X, centroids, labels)
 
 
 if __name__ == "__main__":

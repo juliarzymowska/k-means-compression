@@ -38,7 +38,7 @@ def main():
 
     args = parser.parse_args()
 
-    pipeline(
+    report = pipeline(
         load_path=args.load,
         save_path=args.save,
         k=args.k,
@@ -48,6 +48,10 @@ def main():
         batch_size=args.b,
     )
     print(f"Saved the compressed image to: {args.save}")
+    print(
+        f"Colors: {report['original_unique_colors']:,} -> {report['compressed_unique_colors']:,}\n"
+        f"Size: {report['original_size_bytes']:,} bytes -> {report['compressed_size_bytes']:,} bytes ({report['savings_percent']:.1f}% smaller)"
+    )
 
 
 if __name__ == "__main__":
