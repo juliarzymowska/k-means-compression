@@ -1,7 +1,23 @@
 import argparse
+import sys
 from pathlib import Path
 
 from compressor import pipeline
+from kmeans import KMEANS_DEFAULTS
+
+MAX_K = 256
+
+
+def positive_capped_int(value: str) -> int:
+    """argparse type for -k: validates before any image I/O"""
+    ivalue = int(value)
+    if ivalue < 1:
+        raise argparse.ArgumentTypeError(f"k must be >= 1, got {ivalue}")
+    if ivalue > MAX_K:
+        raise argparse.ArgumentTypeError(
+            f"k={ivalue} is too big, (max supported is {MAX_K})"
+        )
+    return ivalue
 
 
 def main():
@@ -27,13 +43,20 @@ def main():
         type=Path,
         required=True,
     )
-    parser.add_argument("--seed", type=int, default=None)
-    parser.add_argument("--max_iter", type=int, default=100)
-    parser.add_argument("--eps", type=float, default=1e-4)
+    parser.add_argument("--seed", type=int, default=KMEANS_DEFAULTS["seed"])
+    parser.add_argument(
+        "--max_iter",
+        help="max. number of iterations for single run",
+        type=int,
+        default=KMEANS_DEFAULTS["max_iter"],
+    )
+    parser.add_argument(
+        "--eps", help="convergence tolerate", type=float, default=KMEANS_DEFAULTS["eps"]
+    )
     parser.add_argument(
         "-b",
         help="batch size for k-means clustering algorithm",
-        default=100_000,
+        default=KMEANS_DEFAULTS["batch_size"],
     )
     parser.add_argument(
         "--backend",
@@ -43,17 +66,24 @@ def main():
     )
 
     args = parser.parse_args()
+    try:
+        report = pipeline(
+            load_path=args.load,
+            save_path=args.save,
+            k=args.k,
+            seed=args.seed,
+            max_iter=args.max_iter,
+            eps=args.eps,
+            batch_size=args.b,
+            backend=args.backend,
+        )
+    except FileNotFoundError:
+        print(f"Error: could not find image file: {args.load}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
 
-    report = pipeline(
-        load_path=args.load,
-        save_path=args.save,
-        k=args.k,
-        seed=args.seed,
-        max_iter=args.max_iter,
-        eps=args.eps,
-        batch_size=args.b,
-        backend=args.backend,
-    )
     print(f"Saved the compressed image to: {args.save}")
     print(
         f"Colors: {report['original_unique_colors']:,} -> {report['compressed_unique_colors']:,}\n"

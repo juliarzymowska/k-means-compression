@@ -8,6 +8,7 @@ from PIL import Image
 import kmeans
 import kmeans_sklearn
 from image_io import image_load
+from kmeans import KMEANS_DEFAULTS
 from stats import compression_report
 
 
@@ -29,13 +30,18 @@ def pipeline(
     save_path: Path,
     k: int,
     backend: str = "scratch",
-    seed: int | None = None,
-    max_iter: int = 100,
-    eps: float = 1e-4,
-    batch_size: int = 100_000,
+    seed: int | None = KMEANS_DEFAULTS["seed"],
+    max_iter: int = KMEANS_DEFAULTS["max_iter"],
+    eps: float = KMEANS_DEFAULTS["eps"],
+    batch_size: int = KMEANS_DEFAULTS["batch_size"],
 ) -> dict:
     image, (height, width) = image_load(load_path)
     X = image.reshape(-1, 3)
+
+    if k > len(X):
+        raise ValueError(
+            f"k={k} exceeds the number of pixels in the image ({len(X):,})"
+        )
 
     if backend == "scratch":
         centroids, labels, n_iter = kmeans.fit(X, k, seed, max_iter, eps)
@@ -51,7 +57,3 @@ def pipeline(
     im = Image.fromarray(compressed_image)
     im.save(save_path)
     return compression_report(X, centroids, labels)
-
-
-if __name__ == "__main__":
-    pipeline("data/test-small.png", "data/results/test-small.png", k=4, seed=1)
