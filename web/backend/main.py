@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("..")
+sys.path.append("../..")
 from pathlib import Path
 
 from fastapi import FastAPI, Form, UploadFile
@@ -14,7 +14,7 @@ app = FastAPI(
     description="Compressing jpg/png images using k-means clustering algorithm implemented from scratch.",
 )
 
-app.frontend("/", directory="frontend")
+app.frontend("/", directory="../frontend")
 
 
 @app.get("/health")
