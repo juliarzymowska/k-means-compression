@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="eng">
+  <head>
+    <meta charset="utf-8" />
+    <title>K-means Compressor</title>
+  </head>
+  <body>
+    <h1>K-means Compressor</h1>
+    <form action="/compress/" method="post" enctype="multipart/form-data">
+      <!-- without this enctype the browser can't carry binary files-->
+      <label for="image">Upload your image:</label><br />
+      <input
+        type="file"
+        id="image"
+        name="file"
+        required
+        accept=".jpg$|.png$|.jpeg$"
+      /><br />
+
+      <label for="k">Pick number of k colors/clusters:</label><br />
+      <input
+        type="number"
+        id="k"
+        name="k"
+        required
+        min="1"
+        max="256"
+        value="8"
+      /><br />
+
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>
