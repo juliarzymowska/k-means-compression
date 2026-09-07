@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --forest: #4e6f4b;
+  --meadow: #3b543d;
+  --snow: #f8f9fa;
+  --steel: #f8f9fa;
+  --platinum: #e9ecef;
+  --pale-slate: #ced4da;
+  --iron-grey: #495057;
+  --gunmetal: #343a40;
+}
+:root {
+  --font-plain: "Montserrat";
+  --font-secondary: "Yrsa";
+  --font-main: "Michroma"; 
+} 
+
+#grid-line {
+  background-size: 20px 20px;
+  background-image:
+    linear-gradient(to right, var(--platinum) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--platinum) 1px, transparent 1px);
+}
