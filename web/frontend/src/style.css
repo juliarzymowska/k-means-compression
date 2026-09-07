@@ -10,11 +10,11 @@
   --iron-grey: #495057;
   --gunmetal: #343a40;
 }
-/* :root {
-  --font-mono: ;
-  --font-secondary: ;
-  --font-main: ; 
-}  */
+:root {
+  --font-plain: "Montserrat";
+  --font-secondary: "Yrsa";
+  --font-main: "Michroma"; 
+} 
 
 #grid-line {
   background-size: 20px 20px;

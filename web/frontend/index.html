@@ -4,6 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/style.css" rel="stylesheet" />
+    <!-- Favicon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="public/favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="public/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="public/favicon_io/favicon-16x16.png"
+    />
+    <link rel="manifest" href="assets/favicon_io/site.webmanifest" />
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Michroma&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Yrsa:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
     <title>K-means Compressor</title>
   </head>
   <body class="min-h-screen min-w-screen" id="grid-line">
@@ -15,16 +41,20 @@
         <!-- hero background -->
         <div class="grid gap-y-5 place-items-start p-10">
           <!-- hero h1, p, button-->
-          <h1 class="text-6xl font-bold text-(--snow)">K-means Compressor</h1>
-          <p class="text-xl text-(--snow)">
+          <h1
+            class="text-6xl font-bold text-(--snow) font-(family-name:--font-main)"
+          >
+            K-means Compressor
+          </h1>
+          <p class="text-xl text-(--snow) font-(family-name:--font-secondary)">
             Compressing jpg/png images using k-means clustering algorithm
             written from scratch.
           </p>
           <button
-            class="text-xl w-auto border border-white hover:border-(--forest) text-(--snow) font-medium p-2 cursor-pointer"
+            class="text-xl w-auto border border-white hover:border-(--forest) text-(--snow) font-(family-name:--font-plain) p-2 cursor-pointer"
             onclick="
               document
-                .getElementById('form')
+                .getElementById('2nd-screen')
                 .scrollIntoView({ behavior: 'smooth' })
             "
           >
@@ -36,15 +66,17 @@
       <!-- hero background-->
     </div>
     <!-- hero -->
-    <div class="min-w-screen min-h-screen flex items-center justify-center">
-      <!-- 2nd screen with form, before and after -->
+    <div
+      id="2nd-screen"
+      class="min-w-screen min-h-screen flex items-center justify-center"
+    >
+      <!-- 2nd screen with form -->
       <div class="min-w-auto min-h-auto py-10 px-4">
         <!-- box for form -->
         <div class="bg-white shadow-xl p-6">
           <!-- form -->
-          <h2 class="text-2xl font-semibold mb-4">Config</h2>
+          <h2 class="text-2xl font-(family-name:--font-main) mb-4">Config</h2>
           <form
-            id="form"
             class="space-y-4"
             action="/compress/"
             method="post"
@@ -54,7 +86,7 @@
             <div>
               <label
                 for="image"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >Upload your image:</label
               >
               <input
@@ -63,14 +95,14 @@
                 name="file"
                 required
                 accept=".jpg, .png, .jpeg"
-                class="file:mr-4 file:bg-(--forest) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--snow) file:rounded hover:file:bg-(--meadow) hover:file:cursor-pointer"
+                class="file:mr-4 file:bg-(--forest) file:px-4 file:py-2 file:text-lg file:font-(family-name:--font-secondary) file:text-(--snow) file:rounded hover:file:bg-(--meadow) hover:file:cursor-pointer"
               />
             </div>
 
             <div>
               <label
                 for="k"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >k (number of colors/clusters):</label
               >
               <input
@@ -88,7 +120,7 @@
             <div>
               <label
                 for="seed"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >Seed:</label
               >
               <input
@@ -102,7 +134,7 @@
             <div>
               <label
                 for="max_iter"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >Maximum number of iterations:</label
               >
               <input
@@ -118,7 +150,7 @@
             <div>
               <label
                 for="eps"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >Epsilon (convergence tolerance):</label
               >
               <input
@@ -134,7 +166,7 @@
             <div>
               <label
                 for="batch_size"
-                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
                 >Batch size:</label
               >
               <input
@@ -149,7 +181,7 @@
             <input
               type="submit"
               value="Compress..."
-              class="w-full bg-(--forest) px-4 py-2 text-sm font-semibold text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
+              class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
             />
           </form>
         </div>
@@ -157,7 +189,7 @@
       </div>
       <!-- box for form -->
     </div>
-    <!-- 2nd screen with form, before and after -->
+    <!-- 2nd screen with form -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
