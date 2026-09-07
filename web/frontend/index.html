@@ -2,38 +2,162 @@
 <html lang="eng">
   <head>
     <meta charset="utf-8" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/style.css" rel="stylesheet" />
     <title>K-means Compressor</title>
   </head>
-  <body>
-    <h1>K-means Compressor</h1>
-    <form action="/compress/" method="post" enctype="multipart/form-data">
-      <!-- without this enctype the browser can't carry binary files-->
-      <label for="image">Upload your image:</label><br />
-      <input
-        type="file"
-        id="image"
-        name="file"
-        required
-        accept=".jpg$|.png$|.jpeg$"
-      /><br />
+  <body class="min-h-screen min-w-screen" id="grid-line">
+    <div class="w-screen h-screen flex items-center justify-center">
+      <!-- hero -->
+      <div
+        class="bg-[url(/hero.JPG)] bg-fixed bg-cover rounded-xl h-[95vh] w-[93%] flex items-end justify-start"
+      >
+        <!-- hero background -->
+        <div class="grid gap-y-5 place-items-start p-10">
+          <!-- hero h1, p, button-->
+          <h1 class="text-6xl font-bold text-(--snow)">K-means Compressor</h1>
+          <p class="text-xl text-(--snow)">
+            Compressing jpg/png images using k-means clustering algorithm
+            written from scratch.
+          </p>
+          <button
+            class="text-xl w-auto border border-white hover:border-(--forest) text-(--snow) font-medium p-2 cursor-pointer"
+            onclick="
+              document
+                .getElementById('form')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            Let's get started!
+          </button>
+        </div>
+        <!-- hero h1, p, button -->
+      </div>
+      <!-- hero background-->
+    </div>
+    <!-- hero -->
+    <div class="min-w-screen min-h-screen flex items-center justify-center">
+      <!-- 2nd screen with form, before and after -->
+      <div class="min-w-auto min-h-auto py-10 px-4">
+        <!-- box for form -->
+        <div class="bg-white shadow-xl p-6">
+          <!-- form -->
+          <h2 class="text-2xl font-semibold mb-4">Config</h2>
+          <form
+            id="form"
+            class="space-y-4"
+            action="/compress/"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <!-- without this enctype the browser can't carry binary files -->
+            <div>
+              <label
+                for="image"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >Upload your image:</label
+              >
+              <input
+                type="file"
+                id="image"
+                name="file"
+                required
+                accept=".jpg, .png, .jpeg"
+                class="file:mr-4 file:bg-(--forest) file:px-4 file:py-2 file:text-sm file:font-semibold file:text-(--snow) file:rounded hover:file:bg-(--meadow) hover:file:cursor-pointer"
+              />
+            </div>
 
-      <label for="k">Pick number of k colors/clusters:</label><br />
-      <input
-        type="number"
-        id="k"
-        name="k"
-        required
-        min="1"
-        max="256"
-        value="8"
-      /><br />
+            <div>
+              <label
+                for="k"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >k (number of colors/clusters):</label
+              >
+              <input
+                type="number"
+                id="k"
+                name="k"
+                required
+                min="1"
+                max="256"
+                value="8"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
 
-      <input type="submit" value="Submit" />
-    </form>
+            <div>
+              <label
+                for="seed"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >Seed:</label
+              >
+              <input
+                type="number"
+                id="seed"
+                name="seed"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
 
+            <div>
+              <label
+                for="max_iter"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >Maximum number of iterations:</label
+              >
+              <input
+                type="number"
+                id="max_iter"
+                name="max_iter"
+                min="1"
+                value="100"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
+
+            <div>
+              <label
+                for="eps"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >Epsilon (convergence tolerance):</label
+              >
+              <input
+                type="number"
+                id="eps"
+                name="eps"
+                step="any"
+                value="0.0001"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
+
+            <div>
+              <label
+                for="batch_size"
+                class="block text-sm text-(--gunmetal) font-medium mb-1"
+                >Batch size:</label
+              >
+              <input
+                type="number"
+                id="batch_size"
+                name="batch_size"
+                value="50000"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
+
+            <input
+              type="submit"
+              value="Compress..."
+              class="w-full bg-(--forest) px-4 py-2 text-sm font-semibold text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
+            />
+          </form>
+        </div>
+        <!-- form -->
+      </div>
+      <!-- box for form -->
+    </div>
+    <!-- 2nd screen with form, before and after -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
