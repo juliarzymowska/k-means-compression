@@ -178,11 +178,44 @@
               />
             </div>
 
-            <input
-              type="submit"
-              value="Compress..."
-              class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
-            />
+            <div>
+              <label for="backend" class="block text-sm text-(--gunmetal) mb-1"
+                >Backend:</label
+              >
+              <span class="items-center inline-flex gap-1">
+                <input
+                  required
+                  class="appearance-none w-4 h-4 rounded-full border border-(--pale-slate) checked:bg-(--forest) checked:border-(--meadow) hover:cursor-pointer"
+                  type="radio"
+                  id="scratch"
+                  name="backend"
+                  value="scratch"
+                  checked
+                />
+                <label for="scratch" class="text-sm text-(--gunmetal)"
+                  >Scratch</label
+                >
+              </span>
+
+              <span class="items-center inline-flex gap-1">
+                <input
+                  class="appearance-none w-4 h-4 rounded-full border border-(--pale-slate) checked:bg-(--forest) checked:border-(--meadow) hover:cursor-pointer"
+                  type="radio"
+                  id="sklearn"
+                  name="backend"
+                  value="sklearn"
+                />
+                <label for="sklearn" class="text-sm text-(--gunmetal)"
+                  >Scikit-learn</label
+                >
+              </span>
+
+              <input
+                type="submit"
+                value="Compress..."
+                class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
+              />
+            </div>
           </form>
         </div>
         <!-- form -->

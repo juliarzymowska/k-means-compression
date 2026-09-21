@@ -2,6 +2,7 @@ import sys
 
 sys.path.append("../..")
 from pathlib import Path
+from typing import Literal
 
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
@@ -30,6 +31,7 @@ async def run_pipeline(
     max_iter: int = Form(default=KMEANS_DEFAULTS["max_iter"]),
     eps: float = Form(default=KMEANS_DEFAULTS["eps"]),
     batch_size: int = Form(default=KMEANS_DEFAULTS["batch_size"]),
+    backend: Literal["scratch", "sklearn"] = Form(default="scratch"),
 ):
     input_path: Path = Path("../uploads") / file.filename
     input_path.parent.mkdir(parents=True, exist_ok=True)
@@ -51,7 +53,7 @@ async def run_pipeline(
         max_iter=max_iter,
         eps=eps,
         batch_size=batch_size,
-        backend="scratch",
+        backend=backend,
     )
 
     return FileResponse(output_path)
