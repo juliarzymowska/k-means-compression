@@ -8,6 +8,7 @@ from fastapi import FastAPI, Form, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse
 
 from compressor import pipeline
+from elbow import elbow_full
 from kmeans import KMEANS_DEFAULTS
 
 app = FastAPI(
@@ -55,5 +56,29 @@ async def run_pipeline(
         batch_size=batch_size,
         backend=backend,
     )
+
+    return FileResponse(output_path)
+
+
+@app.post("/elbow/")
+async def run_elbow_method(
+    file: UploadFile,
+    max_k: int = Form(gt=2, le=256),
+    seed: int = Form(default=KMEANS_DEFAULTS["seed"]),
+):
+    input_path: Path = Path("../uploads") / file.filename
+    input_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if not file.filename.lower().endswith((".jpg", ".png", ".jpeg")):
+        return HTMLResponse(
+            status_code=400, content="Compressor supports only .jpg or .png files!"
+        )
+
+    contents = await file.read()
+    input_path.write_bytes(contents)
+
+    output_path = Path("../../elbow_method") / f"elbow_{file.filename}"
+
+    elbow_full(max_k=max_k, load=input_path, seed=seed, save_path=output_path)
 
     return FileResponse(output_path)
