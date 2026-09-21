@@ -67,12 +67,18 @@ def find_elbow_k(k_values: np.ndarray, wcss: np.ndarray):
     return k_values[_max_height(height)]
 
 
-def plot_optimal_k(optimal_k: float, wcss: np.ndarray, k_values: np.ndarray) -> None:
+def plot_optimal_k(
+    optimal_k: int,
+    wcss: np.ndarray,
+    k_values: list[int],
+    save_path: Path | None = None,
+) -> None:
     plt.figure(figsize=(8, 5))
     plt.plot(k_values, wcss, marker="o")
+    marker_index = k_values.index(optimal_k)
     plt.plot(
-        k_values[optimal_k - 1],  # -1, because we are indexing from 0
-        wcss[optimal_k - 1],  # same as above
+        k_values[marker_index],
+        wcss[marker_index],
         marker="D",
         color="green",
         markersize=14,
@@ -82,7 +88,27 @@ def plot_optimal_k(optimal_k: float, wcss: np.ndarray, k_values: np.ndarray) -> 
     plt.title("Elbow method")
     plt.xticks(k_values)
     plt.grid(alpha=0.3)
-    plt.show()
+
+    if save_path is not None:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path)
+        plt.close()
+    else:
+        plt.show()
+
+
+def elbow_full(
+    max_k: int, load: Path, seed: int | None = None, save_path: Path | None = None
+) -> int:
+    K_RANGE = list(range(2, max_k))
+    pixels, _ = image_load(load)
+    X = pixels.reshape(-1, 3)
+    wcss = compute_elbow_curve(X, K_RANGE, seed)
+    optimal_k = int(find_elbow_k(K_RANGE, wcss))
+    print(f"Optimal k: {optimal_k}\n")
+    plot_optimal_k(optimal_k, wcss, K_RANGE, save_path=save_path)
+    return optimal_k
 
 
 if __name__ == "__main__":
@@ -111,13 +137,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     try:
-        K_RANGE = list(range(2, args.max_k))
-        pixels, _ = image_load(args.load)
-        X = pixels.reshape(-1, 3)
-        wcss = compute_elbow_curve(X, K_RANGE, args.seed)
-        optimal_k = find_elbow_k(K_RANGE, wcss).astype(int)
-        print(f"Optimal k: {optimal_k}\n")
-        plot_optimal_k(optimal_k, wcss, K_RANGE)
+        elbow_full(max_k=args.max_k, load=args.load, seed=args.seed)
 
     except FileNotFoundError:
         print(f"Error: could not find image file: {args.load}", file=sys.stderr)
