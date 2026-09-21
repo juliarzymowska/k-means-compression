@@ -1,5 +1,11 @@
+import argparse
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
 
+from image_io import image_load
 from kmeans import KMEANS_DEFAULTS, fit
 
 
@@ -58,3 +64,61 @@ def find_elbow_k(k_values: np.ndarray, wcss: np.ndarray):
         height[i] = _find_height(area, base)
 
     return k_values[_max_height(height)]
+
+
+def plot_optimal_k(optimal_k: float, wcss: np.ndarray, k_values: np.ndarray) -> None:
+    plt.figure(figsize=(8, 5))
+    plt.plot(k_values, wcss, marker="o")
+    plt.plot(
+        k_values[optimal_k - 1],  # -1, because we are indexing from 0
+        wcss[optimal_k - 1],  # same as above
+        marker="D",
+        color="green",
+        markersize=14,
+    )
+    plt.xlabel("K")
+    plt.ylabel("Inertia (WCSS)")
+    plt.title("Elbow method")
+    plt.xticks(k_values)
+    plt.grid(alpha=0.3)
+    plt.show()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Finds optimal amount of colors (k) for particular image compression."
+    )
+
+    parser.add_argument(
+        "--load",
+        help="path to image that should be compressed",
+        type=Path,
+        required=True,
+    )
+
+    parser.add_argument(
+        "--max_k",
+        help="maximum value of k to check, else use 32",
+        type=int,
+        default=17,
+        required=False,
+    )
+
+    parser.add_argument("--seed", type=int, default=KMEANS_DEFAULTS["seed"])
+    args = parser.parse_args()
+
+    try:
+        K_RANGE = list(range(2, args.max_k))
+        pixels, _ = image_load(args.load)
+        X = pixels.reshape(-1, 3)
+        wcss = compute_elbow_curve(X, K_RANGE, args.seed)
+        optimal_k = find_elbow_k(K_RANGE, wcss).astype(int)
+        print(f"Optimal k: {optimal_k}\n")
+        plot_optimal_k(optimal_k, wcss, K_RANGE)
+
+    except FileNotFoundError:
+        print(f"Error: could not find image file: {args.load}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
