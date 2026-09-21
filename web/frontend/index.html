@@ -33,13 +33,26 @@
     <title>K-means Compressor</title>
   </head>
   <body class="min-h-screen min-w-screen" id="grid-line">
-    <div class="w-screen h-screen flex items-center justify-center">
+    <div class="relative w-screen h-screen flex items-center justify-center">
       <!-- hero -->
       <div
-        class="bg-[url(/hero.JPG)] bg-fixed bg-cover rounded-xl h-[95vh] w-[93%] flex items-end justify-start"
+        id="hero"
+        class="relative overflow-hidden rounded-xl h-[95vh] w-[93%] flex items-end justify-start"
       >
+        <!-- hero background layers, slid in/out by main.js -->
+        <div
+          id="hero-layer-a"
+          class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-in-out"
+          style="background-image: url(/hero.JPG)"
+        ></div>
+        <div
+          id="hero-layer-b"
+          class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-in-out"
+          style="transform: translateX(100%)"
+        ></div>
+
         <!-- hero background -->
-        <div class="grid gap-y-5 place-items-start p-10">
+        <div class="relative z-10 grid gap-y-5 place-items-start p-10">
           <!-- hero h1, p, button-->
           <h1
             class="text-6xl font-bold text-(--snow) font-(family-name:--font-main)"
@@ -64,19 +77,59 @@
         <!-- hero h1, p, button -->
       </div>
       <!-- hero background-->
+
+      <!-- hero nav arrows -->
+      <button
+        id="prev-btn"
+        aria-label="Previous image"
+        class="absolute left-4 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-12"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <button
+        id="next-btn"
+        aria-label="Next image"
+        class="absolute right-4 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-12"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <!-- hero nav arrows -->
     </div>
     <!-- hero -->
     <div
       id="2nd-screen"
       class="min-w-screen min-h-screen flex items-center justify-center"
     >
-      <!-- 2nd screen with form -->
-      <div class="min-w-auto min-h-auto py-10 px-4">
-        <!-- box for form -->
+      <!-- 2nd screen with forms -->
+      <div class="min-w-auto min-h-auto grid grid-cols-2 gap-x-50">
+        <!-- box form for compression -->
         <div class="bg-white shadow-xl p-6">
           <!-- form -->
           <h2 class="text-2xl font-(family-name:--font-main) mb-4">Config</h2>
           <form
+            id="compress-form"
             class="space-y-4"
             action="/compress/"
             method="post"
@@ -178,18 +231,145 @@
               />
             </div>
 
-            <input
-              type="submit"
-              value="Compress..."
-              class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
-            />
+            <div>
+              <label for="backend" class="block text-sm text-(--gunmetal) mb-1"
+                >Backend:</label
+              >
+              <span class="items-center inline-flex gap-1">
+                <input
+                  required
+                  class="appearance-none w-4 h-4 rounded-full border border-(--pale-slate) checked:bg-(--forest) checked:border-(--meadow) hover:cursor-pointer"
+                  type="radio"
+                  id="scratch"
+                  name="backend"
+                  value="scratch"
+                  checked
+                />
+                <label for="scratch" class="text-sm text-(--gunmetal)"
+                  >Scratch</label
+                >
+              </span>
+
+              <span class="items-center inline-flex gap-1">
+                <input
+                  class="appearance-none w-4 h-4 rounded-full border border-(--pale-slate) checked:bg-(--forest) checked:border-(--meadow) hover:cursor-pointer"
+                  type="radio"
+                  id="sklearn"
+                  name="backend"
+                  value="sklearn"
+                />
+                <label for="sklearn" class="text-sm text-(--gunmetal)"
+                  >Scikit-learn</label
+                >
+              </span>
+
+              <input
+                type="submit"
+                value="Compress..."
+                class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
+              />
+            </div>
           </form>
         </div>
-        <!-- form -->
+        <!-- box form for compression -->
+
+        <!-- box form for elbow -->
+        <div class="bg-white shadow-xl p-6">
+          <!-- form -->
+          <h2 class="text-2xl font-(family-name:--font-main) mb-4">
+            Elbow method
+          </h2>
+          <form
+            id="elbow-form"
+            class="space-y-4"
+            action="/elbow/"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <!-- without this enctype the browser can't carry binary files -->
+            <div>
+              <label
+                for="image"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
+                >Upload your image:</label
+              >
+              <input
+                type="file"
+                id="image"
+                name="file"
+                required
+                accept=".jpg, .png, .jpeg"
+                class="file:mr-4 file:bg-(--forest) file:px-4 file:py-2 file:text-lg file:font-(family-name:--font-secondary) file:text-(--snow) file:rounded hover:file:bg-(--meadow) hover:file:cursor-pointer"
+              />
+            </div>
+
+            <div>
+              <label
+                for="max_k"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
+                >Max k (max. number of colors/clusters):</label
+              >
+              <input
+                type="number"
+                id="max_k"
+                name="max_k"
+                required
+                min="2"
+                max="256"
+                value="16"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
+
+            <div>
+              <label
+                for="seed"
+                class="block text-sm text-(--gunmetal) font-(family-name:--font-plain) mb-1"
+                >Seed:</label
+              >
+              <input
+                type="number"
+                id="seed"
+                name="seed"
+                class="block w-full border border-(--pale-slate) p-2"
+              />
+            </div>
+            <div>
+              <input
+                type="submit"
+                value="Compute..."
+                class="w-full bg-(--forest) px-4 py-2 text-lg font-(family-name:--font-secondary) text-(--snow) rounded hover:bg-(--meadow) hover:cursor-pointer"
+              />
+            </div>
+          </form>
+        </div>
+        <!-- box form for elbow -->
       </div>
-      <!-- box for form -->
     </div>
     <!-- 2nd screen with form -->
+    <!-- 3rd screen with outputs -->
+    <div
+      id="results"
+      class="min-w-screen min-h-screen flex items-center justify-center flex-col gap-y-50"
+    >
+      <!-- compression result -->
+      <div
+        id="compress-result"
+        class="hidden mt-4 w-[100rem] h-[100rem] overflow-hidden"
+      >
+        <img id="compress-output" class="w-full h-full object-contain" />
+      </div>
+      <!-- compression result -->
+      <!-- elbow result -->
+      <div
+        id="elbow-result"
+        class="hidden mt-4 mb-50 w-[100rem] h-[100rem] overflow-hidden"
+      >
+        <img id="elbow-output" class="w-full h-full object-contain" />
+      </div>
+      <!-- elbow result -->
+    </div>
+    <!-- 3rd screen with outputs-->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

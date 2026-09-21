@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/compress": "http://127.0.0.1:8000",
+      "/elbow": "http://127.0.0.1:8000",
       "/health": "http://127.0.0.1:8000",
     },
   },
