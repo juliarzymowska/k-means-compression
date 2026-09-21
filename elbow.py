@@ -5,6 +5,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+from error import elbow_max_k_int, non_negative_int
 from image_io import image_load
 from kmeans import KMEANS_DEFAULTS, fit
 
@@ -99,12 +100,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--max_k",
         help="maximum value of k to check, else use 32",
-        type=int,
+        type=elbow_max_k_int,
         default=17,
         required=False,
     )
 
-    parser.add_argument("--seed", type=int, default=KMEANS_DEFAULTS["seed"])
+    parser.add_argument(
+        "--seed", type=non_negative_int, default=KMEANS_DEFAULTS["seed"]
+    )
     args = parser.parse_args()
 
     try:

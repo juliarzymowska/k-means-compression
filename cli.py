@@ -3,21 +3,8 @@ import sys
 from pathlib import Path
 
 from compressor import pipeline
+from error import non_negative_int, positive_capped_int, positive_float, positive_int
 from kmeans import KMEANS_DEFAULTS
-
-MAX_K = 256
-
-
-def positive_capped_int(value: str) -> int:
-    """argparse type for -k: validates before any image I/O"""
-    ivalue = int(value)
-    if ivalue < 1:
-        raise argparse.ArgumentTypeError(f"k must be >= 1, got {ivalue}")
-    if ivalue > MAX_K:
-        raise argparse.ArgumentTypeError(
-            f"k={ivalue} is too big, (max supported is {MAX_K})"
-        )
-    return ivalue
 
 
 def main():
@@ -28,7 +15,7 @@ def main():
     parser.add_argument(
         "-k",
         help="number of clusters to find in an image",
-        type=int,
+        type=positive_capped_int,
         required=True,
     )
     parser.add_argument(
@@ -43,19 +30,25 @@ def main():
         type=Path,
         required=True,
     )
-    parser.add_argument("--seed", type=int, default=KMEANS_DEFAULTS["seed"])
+    parser.add_argument(
+        "--seed", type=non_negative_int, default=KMEANS_DEFAULTS["seed"]
+    )
     parser.add_argument(
         "--max_iter",
         help="max. number of iterations for single run",
-        type=int,
+        type=positive_int,
         default=KMEANS_DEFAULTS["max_iter"],
     )
     parser.add_argument(
-        "--eps", help="convergence tolerate", type=float, default=KMEANS_DEFAULTS["eps"]
+        "--eps",
+        help="convergence tolerate",
+        type=positive_float,
+        default=KMEANS_DEFAULTS["eps"],
     )
     parser.add_argument(
         "-b",
         help="batch size for k-means clustering algorithm",
+        type=positive_int,
         default=KMEANS_DEFAULTS["batch_size"],
     )
     parser.add_argument(
