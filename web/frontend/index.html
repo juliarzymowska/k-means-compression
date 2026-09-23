@@ -33,13 +33,26 @@
     <title>K-means Compressor</title>
   </head>
   <body class="min-h-screen min-w-screen" id="grid-line">
-    <div class="w-screen h-screen flex items-center justify-center">
+    <div class="relative w-screen h-screen flex items-center justify-center">
       <!-- hero -->
       <div
-        class="bg-[url(/hero.JPG)] bg-fixed bg-cover rounded-xl h-[95vh] w-[93%] flex items-end justify-start"
+        id="hero"
+        class="relative overflow-hidden rounded-xl h-[95vh] w-[93%] flex items-end justify-start"
       >
+        <!-- hero background layers, slid in/out by main.js -->
+        <div
+          id="hero-layer-a"
+          class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-in-out"
+          style="background-image: url(/hero.JPG)"
+        ></div>
+        <div
+          id="hero-layer-b"
+          class="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-in-out"
+          style="transform: translateX(100%)"
+        ></div>
+
         <!-- hero background -->
-        <div class="grid gap-y-5 place-items-start p-10">
+        <div class="relative z-10 grid gap-y-5 place-items-start p-10">
           <!-- hero h1, p, button-->
           <h1
             class="text-6xl font-bold text-(--snow) font-(family-name:--font-main)"
@@ -64,6 +77,29 @@
         <!-- hero h1, p, button -->
       </div>
       <!-- hero background-->
+
+      <!-- hero nav arrows -->
+      <button
+        id="prev-btn"
+        aria-label="Previous image"
+        class="absolute left-4 cursor-pointer"
+      >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-12">
+        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-4.28 9.22a.75.75 0 0 0 0 1.06l3 3a.75.75 0 1 0 1.06-1.06l-1.72-1.72h5.69a.75.75 0 0 0 0-1.5h-5.69l1.72-1.72a.75.75 0 0 0-1.06-1.06l-3 3Z" clip-rule="evenodd" />
+      </svg>
+
+      </button>
+      <button
+        id="next-btn"
+        aria-label="Next image"
+        class="absolute right-4 cursor-pointer"
+      >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-12">
+        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm4.28 10.28a.75.75 0 0 0 0-1.06l-3-3a.75.75 0 1 0-1.06 1.06l1.72 1.72H8.25a.75.75 0 0 0 0 1.5h5.69l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3Z" clip-rule="evenodd" />
+      </svg>
+
+      </button>
+      <!-- hero nav arrows -->
     </div>
     <!-- hero -->
     <div
