@@ -34,7 +34,7 @@ async def run_pipeline(
     batch_size: int = Form(default=KMEANS_DEFAULTS["batch_size"]),
     backend: Literal["scratch", "sklearn"] = Form(default="scratch"),
 ):
-    input_path: Path = Path("../uploads") / file.filename
+    input_path: Path = Path("../../uploads") / file.filename
     input_path.parent.mkdir(parents=True, exist_ok=True)
 
     if not file.filename.lower().endswith((".jpg", ".png", ".jpeg")):
@@ -45,7 +45,7 @@ async def run_pipeline(
     contents = await file.read()
     input_path.write_bytes(contents)
 
-    output_path = Path("../results") / f"compressed_{file.filename}"
+    output_path = Path("../../results") / f"compressed_{file.filename}"
     pipeline(
         load_path=input_path,
         save_path=output_path,

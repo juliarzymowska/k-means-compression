@@ -73,7 +73,7 @@ def plot_optimal_k(
     k_values: list[int],
     save_path: Path | None = None,
 ) -> None:
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(32, 20))
     plt.plot(k_values, wcss, marker="o")
     marker_index = k_values.index(optimal_k)
     plt.plot(
