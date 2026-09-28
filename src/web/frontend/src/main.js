@@ -27,8 +27,6 @@ document
   .getElementById("next-btn")
   .addEventListener("click", () => goToImage(1));
 
-const resultsSection = document.getElementById("results");
-
 async function handleImageForm(formId, resultId, imgId) {
   const form = document.getElementById(formId);
   const result = document.getElementById(resultId);
@@ -60,7 +58,7 @@ async function handleImageForm(formId, resultId, imgId) {
         img.src = URL.createObjectURL(blob);
       });
       result.classList.remove("hidden");
-      resultsSection.scrollIntoView({ behavior: "smooth" });
+      result.scrollIntoView({ behavior: "smooth", block: "start" });
     } finally {
       submitBtn.disabled = false;
       submitBtn.value = originalLabel;

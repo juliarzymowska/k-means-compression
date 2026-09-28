@@ -5,9 +5,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from error import elbow_max_k_int, non_negative_int
-from image_io import image_load
-from kmeans import KMEANS_DEFAULTS, fit
+from src.error import elbow_max_k_int, non_negative_int
+from src.image_io import image_load
+from src.kmeans import KMEANS_DEFAULTS, fit
 
 
 def _within_clusters_sum_of_squares(
@@ -73,7 +73,7 @@ def plot_optimal_k(
     k_values: list[int],
     save_path: Path | None = None,
 ) -> None:
-    plt.figure(figsize=(32, 20))
+    plt.figure(figsize=(16, 10))
     plt.plot(k_values, wcss, marker="o")
     marker_index = k_values.index(optimal_k)
     plt.plot(
@@ -101,7 +101,7 @@ def plot_optimal_k(
 def elbow_full(
     max_k: int, load: Path, seed: int | None = None, save_path: Path | None = None
 ) -> int:
-    K_RANGE = list(range(2, max_k))
+    K_RANGE = list(range(2, max_k + 1))
     pixels, _ = image_load(load)
     X = pixels.reshape(-1, 3)
     wcss = compute_elbow_curve(X, K_RANGE, seed)
@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--max_k",
-        help="maximum value of k to check, else use 32",
+        help="maximum value of k to check (inclusive), default 17",
         type=elbow_max_k_int,
         default=17,
         required=False,

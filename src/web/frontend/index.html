@@ -314,7 +314,7 @@
                 id="max_k"
                 name="max_k"
                 required
-                min="2"
+                min="3"
                 max="256"
                 value="16"
                 class="block w-full border border-(--pale-slate) p-2"
@@ -355,9 +355,9 @@
       <!-- compression result -->
       <div
         id="compress-result"
-        class="hidden mt-4 w-[100rem] h-[100rem] overflow-hidden"
+        class="hidden mt-4 max-w-[min(100rem,95vw)] max-h-[min(100rem,90vh)] overflow-auto"
       >
-        <img id="compress-output" class="w-full h-full object-contain" />
+        <img id="compress-output" class="block max-w-none" />
       </div>
       <!-- compression result -->
       <!-- elbow result -->

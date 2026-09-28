@@ -5,11 +5,30 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-import kmeans
-import kmeans_sklearn
-from image_io import image_load
-from kmeans import KMEANS_DEFAULTS
-from stats import compression_report
+from src import kmeans, kmeans_sklearn
+from src.image_io import image_load
+from src.kmeans import KMEANS_DEFAULTS
+
+
+def count_unique_colors(pixels: np.ndarray) -> int:
+    """Count the number of distinct RGB colors in a pixel array, shape (N, 3)"""
+    return len(np.unique(pixels, axis=0))
+
+
+def compression_report(
+    pixels: np.ndarray, centroids: np.ndarray, labels: np.ndarray
+) -> dict:
+    """Summarize the compression achieved so far: colors and the raw uncompressed baseline size"""
+    n_pixels = len(pixels)
+    original_colors = count_unique_colors(pixels)
+    compressed_colors = len(np.unique(labels))  # clusters used
+
+    return {
+        "n_pixels": n_pixels,
+        "original_unique_colors": original_colors,
+        "compressed_unique_colors": compressed_colors,
+        "original_size_bytes": n_pixels * 3,
+    }
 
 
 def indexed_image(
@@ -46,7 +65,7 @@ def pipeline(
         )
 
     if backend == "scratch":
-        centroids, labels, n_iter = kmeans.fit(X, k, seed, max_iter, eps)
+        centroids, labels, n_iter = kmeans.fit(X, k, seed, max_iter, eps, batch_size)
     elif backend == "sklearn":
         centroids, labels, n_iter = kmeans_sklearn.fit(X, k, seed, max_iter, eps)  # noqa: RUF059
     else:
@@ -64,5 +83,9 @@ def pipeline(
 
     report = compression_report(X, centroids, labels)
     report["save_path"] = str(save_path)
-    report["actual_size_bytes"] = save_path.stat().st_size
+    actual_size_bytes = save_path.stat().st_size
+    report["actual_size_bytes"] = actual_size_bytes
+    report["actual_savings_percent"] = (
+        1 - actual_size_bytes / report["original_size_bytes"]
+    ) * 100
     return report

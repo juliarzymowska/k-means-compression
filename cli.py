@@ -2,9 +2,14 @@ import argparse
 import sys
 from pathlib import Path
 
-from compressor import pipeline
-from error import non_negative_int, positive_capped_int, positive_float, positive_int
-from kmeans import KMEANS_DEFAULTS
+from src.compressor import pipeline
+from src.error import (
+    non_negative_int,
+    positive_capped_int,
+    positive_float,
+    positive_int,
+)
+from src.kmeans import KMEANS_DEFAULTS
 
 
 def main():
@@ -77,10 +82,10 @@ def main():
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
 
-    print(f"Saved the compressed image to: {args.save}")
+    print(f"Saved the compressed image to: {report['save_path']}")
     print(
         f"Colors: {report['original_unique_colors']:,} -> {report['compressed_unique_colors']:,}\n"
-        f"Size: {report['original_size_bytes']:,} bytes -> {report['compressed_size_bytes']:,} bytes ({report['savings_percent']:.1f}% smaller)"
+        f"Size: {report['original_size_bytes']:,} bytes -> {report['actual_size_bytes']:,} bytes ({report['actual_savings_percent']:.1f}% smaller)"
     )
 
 

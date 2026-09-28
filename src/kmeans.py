@@ -76,5 +76,5 @@ def fit(
         if shift < eps:  # if shift is small enough
             break
 
-    _, labels = _assign_clusters(X, centroids)
+    _, labels = _assign_clusters(X, centroids, batch_size)
     return (centroids, labels, i + 1)
