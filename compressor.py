@@ -12,17 +12,19 @@ from kmeans import KMEANS_DEFAULTS
 from stats import compression_report
 
 
-def image_reconstruction(
+def indexed_image(
     centroids: np.ndarray, labels: np.ndarray, height: int, width: int
-) -> np.ndarray:
-    """Rebuild the compressed image: every pixel becomes its cluster's centroid color."""
-    compressed_pixels = centroids[labels]
-    compressed_image = compressed_pixels.reshape(
-        height, width, 3
-    )  # back to a real image size
-    return np.round(compressed_image).astype(
-        np.uint8
-    )  # uint8 is a type for images (0, 255) :)
+) -> Image.Image:
+    """Build a palette-mode image: real per-pixel palette indices + a real palette.
+
+    Use PNG encoding to make k-means clustering savings on file size.
+    """
+    palette_image = Image.new("P", (width, height))
+    palette = np.zeros((256, 3), dtype=np.uint8)
+    palette[: len(centroids)] = np.round(centroids).astype(np.uint8)
+    palette_image.putpalette(palette.flatten().tolist())
+    palette_image.putdata(labels.astype(np.uint8).tolist())
+    return palette_image
 
 
 def pipeline(
@@ -51,9 +53,16 @@ def pipeline(
         raise ValueError(f"unknown backend: {backend!r}")
 
     save_path = Path(save_path)
+    if save_path.suffix.lower() != ".png":
+        # JPEG can't store palette indices (it's a DCT codec)
+        # PNG stores them losslessly, so it's the only format that shows the compression on disk
+        save_path = save_path.with_suffix(".png")
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
-    compressed_image = image_reconstruction(centroids, labels, height, width)
-    im = Image.fromarray(compressed_image)
-    im.save(save_path)
-    return compression_report(X, centroids, labels)
+    im = indexed_image(centroids, labels, height, width)
+    im.save(save_path, optimize=True)
+
+    report = compression_report(X, centroids, labels)
+    report["save_path"] = str(save_path)
+    report["actual_size_bytes"] = save_path.stat().st_size
+    return report
