@@ -158,8 +158,7 @@ Then open the printed `localhost` URL. The page has two forms:
 Backend is on `localhost:8000` and frontend is on `localhost:5173`.
 Uploads and results are placed in `results/uploads`, `results/compressed`, and `results/elbow_method`.
 
-[Watch the web interface walkthrough](examples/web-tutorial.mp4)
-
+https://github.com/user-attachments/assets/e77a3e92-7434-451a-84e5-60df38f950f0
  
 ## Architecture
  ```sh
